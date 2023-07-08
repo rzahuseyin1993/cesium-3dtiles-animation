@@ -6,7 +6,7 @@
 
 In the project directory, you can run:
 
-## `npm install --global yarn` and `yarn install`
+### `npm install --global yarn` and `yarn install`
 
 # Available Scripts
 
