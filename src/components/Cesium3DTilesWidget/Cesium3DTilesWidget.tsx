@@ -10,6 +10,7 @@ import {
   CameraLookAt,
   Clock,
   PolylineGraphics,
+  CameraFlyToBoundingSphere,
 } from 'resium';
 import {
   Cartesian3,
@@ -21,6 +22,7 @@ import {
   Cartographic,
   createWorldTerrain,
   Color,
+  BoundingSphere,
 } from 'cesium';
 
 import './cesium-custom.css';
@@ -49,7 +51,7 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [groundPosition, setGroundPosition] = useState<Cartesian3 | null>(null);
   const [markerPosition, setMarkerPosition] = useState<Cartesian3 | null>(null);
-
+  const [isFlyEnded, setIsFlyEnded] = useState<boolean>(false);
   const handleMarkerPosition = async () => {
     if (viewer) {
       const updatedPositions = await sampleTerrainMostDetailed(
@@ -111,13 +113,8 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
 
       <CameraLookAt
         target={Cartesian3.fromDegrees(position.longitude, position.latitude)}
-        offset={
-          new HeadingPitchRange(
-            offset?.heading ?? 0,
-            CesiumMath.toRadians(-80),
-            offset?.range ?? 500,
-          )
-        }
+        offset={new HeadingPitchRange(0, CesiumMath.toRadians(-45), 5000)}
+        once={true}
       />
       <Cesium3DTileset
         url={`https://tile.googleapis.com/v1/3dtiles/root.json?key=${GOOGLE_API_KEY}`}
@@ -125,6 +122,18 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
       />
       {groundPosition && markerPosition && (
         <>
+          <CameraFlyToBoundingSphere
+            boundingSphere={new BoundingSphere(groundPosition)}
+            offset={
+              new HeadingPitchRange(
+                offset?.heading ?? 0,
+                CesiumMath.toRadians(offset?.pitch ?? -20),
+                offset?.range ?? 500,
+              )
+            }
+            duration={5}
+            onComplete={() => setIsFlyEnded(true)}
+          />
           <Entity>
             <PolylineGraphics
               positions={[groundPosition, markerPosition]}
@@ -143,7 +152,7 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
       )}
 
       <Clock
-        shouldAnimate={isLoading} // Animation on by default
+        shouldAnimate={isFlyEnded} // Animation on by default
         onTick={() => {
           if (viewer && groundPosition) {
             // viewer.camera.rotate(Cartesian3.UNIT_Z, CesiumMath.toRadians(-0.5));
