@@ -115,7 +115,7 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
 
       <CameraLookAt
         target={Cartesian3.fromDegrees(position.longitude, position.latitude)}
-        offset={new HeadingPitchRange(0, CesiumMath.toRadians(-90), 2000)}
+        offset={new HeadingPitchRange(0, CesiumMath.toRadians(-80), 2000)}
         once={true}
       />
       <Cesium3DTileset
@@ -128,12 +128,12 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
             boundingSphere={new BoundingSphere(groundPosition)}
             offset={
               new HeadingPitchRange(
-                0,
-                CesiumMath.toRadians(-90),
+                offset?.heading ?? 0,
+                CesiumMath.toRadians(offset?.pitch ?? -20),
                 offset?.range ?? 500,
               )
             }
-            duration={2}
+            duration={4}
             onComplete={() => setIsFlyEnded(true)}
           />
           <Entity>
