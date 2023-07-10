@@ -2,8 +2,10 @@
   "name": "cesium-3dtiles-animation",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@craco/craco": "^7.1.0",
+    "@react-google-maps/api": "^2.18.1",
     "cesium": "1.106",
     "craco-cesium": "^1.2.0",
     "react": "^18.2.0",
@@ -15,7 +17,7 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
-    "start": "craco start", 
+    "start": "craco start",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject"
@@ -32,18 +34,12 @@
       }
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^14.0.0",
