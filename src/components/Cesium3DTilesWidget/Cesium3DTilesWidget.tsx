@@ -77,7 +77,9 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
 
   useEffect(() => {
     if (viewer) {
-      setIsLoading(true);
+      setTimeout(() => {
+        setIsLoading(true);
+      }, 5000);
     }
   }, [viewer]);
 
@@ -113,7 +115,7 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
 
       <CameraLookAt
         target={Cartesian3.fromDegrees(position.longitude, position.latitude)}
-        offset={new HeadingPitchRange(0, CesiumMath.toRadians(-45), 5000)}
+        offset={new HeadingPitchRange(0, CesiumMath.toRadians(-45), 2000)}
         once={true}
       />
       <Cesium3DTileset
