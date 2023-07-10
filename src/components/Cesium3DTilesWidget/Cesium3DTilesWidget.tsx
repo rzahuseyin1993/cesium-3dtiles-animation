@@ -51,6 +51,7 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [groundPosition, setGroundPosition] = useState<Cartesian3 | null>(null);
   const [markerPosition, setMarkerPosition] = useState<Cartesian3 | null>(null);
+  const [isFlyStart, setIsFlyStart] = useState<boolean>(false);
   const [isFlyEnded, setIsFlyEnded] = useState<boolean>(false);
   const handleMarkerPosition = async () => {
     if (viewer) {
@@ -77,8 +78,9 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
 
   useEffect(() => {
     if (viewer) {
+      setIsLoading(true);
       setTimeout(() => {
-        setIsLoading(true);
+        setIsFlyStart(true);
       }, 2000);
     }
   }, [viewer]);
@@ -124,18 +126,6 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
       />
       {groundPosition && markerPosition && (
         <>
-          <CameraFlyToBoundingSphere
-            boundingSphere={new BoundingSphere(groundPosition)}
-            offset={
-              new HeadingPitchRange(
-                offset?.heading ?? 0,
-                CesiumMath.toRadians(offset?.pitch ?? -20),
-                offset?.range ?? 500,
-              )
-            }
-            duration={4}
-            onComplete={() => setIsFlyEnded(true)}
-          />
           <Entity>
             <PolylineGraphics
               positions={[groundPosition, markerPosition]}
@@ -152,7 +142,20 @@ const Cesium3DTilesWidget = (props: Cesiuum3DTilesWidgetProps) => {
           </Entity>
         </>
       )}
-
+      {isFlyStart && groundPosition && (
+        <CameraFlyToBoundingSphere
+          boundingSphere={new BoundingSphere(groundPosition)}
+          offset={
+            new HeadingPitchRange(
+              offset?.heading ?? 0,
+              CesiumMath.toRadians(offset?.pitch ?? -20),
+              offset?.range ?? 500,
+            )
+          }
+          duration={4}
+          onComplete={() => setIsFlyEnded(true)}
+        />
+      )}
       <Clock
         shouldAnimate={isFlyEnded} // Animation on by default
         onTick={() => {
